@@ -82,7 +82,7 @@ struct Config<'a> {
 impl<'a> Config<'a> {
     pub fn try_init() -> Result<Self, Box<dyn Error>> {
         let mut config = config::Config::new();
-        config.merge(config::File::with_name("unsplash"))?;
+        config.merge(config::File::with_name("unsplash").required(false))?;
         config.merge(config::Environment::with_prefix("UNSPLASH"))?;
 
         let config: Config = config.try_into()?;
