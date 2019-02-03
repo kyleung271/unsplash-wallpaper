@@ -7,7 +7,6 @@ edition = "2018"
 [dependencies]
 wallpaper = "2.0.1"
 reqwest = "0.9.9"
-serde_json = "1.0.38"
 log = "0.4.6"
 env_logger = "0.6.0"
 config = "0.9.2"
