@@ -37,8 +37,11 @@ impl<'a> Default for QueryParams<'a> {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(default)]
 struct DownloadParams<'a> {
+    #[serde(alias = "width")]
     w: u32,
+    #[serde(alias = "height")]
     h: u32,
+    #[serde(alias = "format")]
     fm: Cow<'a, str>,
     fit: Cow<'a, str>,
     crop: Option<Cow<'a, str>>,
