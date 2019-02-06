@@ -45,6 +45,7 @@ struct DownloadParams<'a> {
     fm: Cow<'a, str>,
     fit: Cow<'a, str>,
     crop: Option<Cow<'a, str>>,
+    dpi: f64,
 }
 
 impl<'a> Default for DownloadParams<'a> {
@@ -55,6 +56,7 @@ impl<'a> Default for DownloadParams<'a> {
             fm: ("jpg").into(),
             fit: ("crop").into(),
             crop: Some(("entropy").into()),
+            dpi: 1.,
         }
     }
 }
@@ -72,18 +74,16 @@ struct Urls {
 #[derive(Debug, Default, Serialize, Deserialize)]
 #[serde(default)]
 struct Config<'a> {
-    access_key: String,
-    #[serde(flatten)]
-    query_params: QueryParams<'a>,
-    #[serde(flatten)]
-    download_params: DownloadParams<'a>,
+    key: String,
+    query: QueryParams<'a>,
+    download: DownloadParams<'a>,
 }
 
 impl<'a> Config<'a> {
     pub fn try_init() -> Result<Self, Box<dyn Error>> {
         let mut config = config::Config::new();
         config.merge(config::File::with_name("unsplash").required(false))?;
-        config.merge(config::Environment::with_prefix("UNSPLASH"))?;
+        config.merge(config::Environment::with_prefix("UNSPLASH").separator("_"))?;
 
         let config: Config = config.try_into()?;
         Ok(config)
@@ -100,9 +100,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let req = client
         .get("https://api.unsplash.com/photos/random")
-        .header("Authorization", format!("Client-ID {}", config.access_key))
+        .header("Authorization", format!("Client-ID {}", config.key))
         .header("Accept-Version", "v1")
-        .query(&config.query_params);
+        .query(&config.query);
 
     info!("{:?}", req);
 
@@ -114,7 +114,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let req = client
         .get(&res.urls.raw)
-        .query(&config.download_params)
+        .query(&config.download)
         .build()?;
     let url = req.url().as_str();
 
