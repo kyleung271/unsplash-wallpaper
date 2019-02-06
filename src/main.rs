@@ -45,7 +45,7 @@ struct DownloadParams<'a> {
     fm: Cow<'a, str>,
     fit: Cow<'a, str>,
     crop: Option<Cow<'a, str>>,
-    dpi: f64,
+    dpr: f64,
 }
 
 impl<'a> Default for DownloadParams<'a> {
@@ -56,7 +56,7 @@ impl<'a> Default for DownloadParams<'a> {
             fm: ("jpg").into(),
             fit: ("crop").into(),
             crop: Some(("entropy").into()),
-            dpi: 1.,
+            dpr: 1.,
         }
     }
 }
